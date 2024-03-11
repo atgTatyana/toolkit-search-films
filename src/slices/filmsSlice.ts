@@ -70,16 +70,16 @@ export const filmsSlice = createSliceWithThunk({
       )
     }),
 
-    fetchFilms: create.asyncThunk(
+    fetchFilms: create.asyncThunk<any, string, { rejectValue: string }>(
       async (url: string, { rejectWithValue }) => {
         try {
           const response = await fetch(url)
           if (!response.ok) {
-            return rejectWithValue("Loading films error!")
+            throw new Error('Loading films error!');
           }
           return await response.json()
         } catch (e) {
-          return rejectWithValue(e)
+          return rejectWithValue(e instanceof Error ? e.message : 'Unknown error');
         }
       },
       {
